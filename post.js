@@ -13,7 +13,7 @@ const credentials = {
 const pool = new Pool(credentials);
 
 const addPost = async (titulo, url, descripcion) => {
-  const query = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3)";
+  const query = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3, 0)";
   const values = [titulo, url, descripcion];
   const result = await pool.query(query, values);
   console.log("¡Post agregado!");
@@ -25,4 +25,16 @@ const getPosts = async () => {
   return rows;
 };
 
-module.exports = { addPost, getPosts };
+const addLike = async (id) => {
+  const query = "UPDATE posts SET likes = likes + 1 WHERE id = $1";
+  const values = [id];
+  const result = await pool.query(query, values);
+};
+
+const deletePost = async (id) => {
+  const query = "DELETE FROM posts WHERE id = $1";
+  const values = [id];
+  const result = await pool.query(query, values);
+};
+
+module.exports = { addPost, getPosts, addLike, deletePost };

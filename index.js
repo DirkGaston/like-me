@@ -1,4 +1,4 @@
-const { addPost, getPosts } = require("./post");
+const { addPost, getPosts, addLike, deletePost } = require("./post");
 
 const express = require("express");
 const app = express();
@@ -21,9 +21,29 @@ app.get("/posts", async (req, res) => {
 });
 
 app.post("/posts", async (req, res) => {
-  const { titulo, url, descripcion } = req.body;
-  await addPost(titulo, url, descripcion);
-  res.send("¡Post agregado con éxito!");
+  try {
+    const { titulo, url, descripcion } = req.body;
+    await addPost(titulo, url, descripcion);
+    res.send("¡Post agregado con éxito!");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.put("/posts/like/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await addLike(id);
+    res.send("¡Like agregado con éxito!");
+  } catch (error) {
+    res.status(500).send("¡Error! No se pudo agregar el like.");
+  }
+});
+
+app.delete("/posts/:id", async (req, res) => {
+  const { id } = req.params;
+  await deletePost(id);
+  res.send("Post eliminado con éxito");
 });
 
 app.get("/", (req, res) => {
